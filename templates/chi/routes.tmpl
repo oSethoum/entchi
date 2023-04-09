@@ -1,0 +1,38 @@
+package routes
+
+import (
+	"{{ dir .Package }}/handlers"
+
+	"github.com/go-chi/chi/v5"
+)
+
+func routes() chi.Router {
+    r := chi.NewRouter()
+	{{- range .Schema }}
+	{{- if skip_handler_find . | not }} 
+	r.Get("/{{ plural .Name | camel }}/{id}", handlers.Find{{ pascal .Name }})
+	{{- end }}
+	{{- if skip_handler_find_many . | not }} 
+	r.Get("/{{ plural .Name | camel }}", handlers.Find{{ plural .Name | pascal }})
+	{{- end }}
+	{{- if skip_handler_create . | not }} 
+	r.Post("/{{ plural .Name | camel }}", handlers.Create{{ pascal .Name }})
+	{{- end }}
+	{{- if skip_handler_create_many . | not }} 
+	r.Post("/{{ plural .Name | camel }}/bulk", handlers.Create{{ plural .Name | pascal }})
+	{{- end }}
+	{{- if skip_handler_update . | not }} 
+	r.Patch("/{{ plural .Name | camel }}/{id}", handlers.Update{{ pascal .Name }})
+	{{- end }}
+	{{- if skip_handler_update_many . | not }} 
+	r.Patch("/{{ plural .Name | camel }}", handlers.Update{{ plural .Name | pascal }})
+	{{- end }}
+	{{- if skip_handler_delete . | not }} 
+	r.Delete("/{{ plural .Name | camel }}/{id}", handlers.Delete{{ pascal .Name }})
+	{{- end }}
+	{{- if skip_handler_delete_many . | not }} 
+	r.Delete("/{{ plural .Name | camel }}", handlers.Delete{{ plural .Name | pascal }})
+	{{- end }}
+    {{ end }}
+	return r
+}

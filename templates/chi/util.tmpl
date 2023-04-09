@@ -1,0 +1,46 @@
+package handlers
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+type Map map[string]any
+
+func StopWithError(w http.ResponseWriter, err error, code ...int) {
+	statusCode := http.StatusBadRequest
+	if len(code) > 0 {
+		statusCode = code[0]
+	}
+	w.WriteHeader(statusCode)
+	response := Map{
+		"code":   statusCode,
+		"status": "error",
+		"error":  err.Error(),
+	}
+	r, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+	w.Write(r)
+}
+
+func StopWithSuccess(w http.ResponseWriter, data any, code ...int) {
+	statusCode := http.StatusOK
+	if len(code) > 0 {
+		statusCode = code[0]
+	}
+	w.WriteHeader(statusCode)
+	response := Map{
+		"code":   statusCode,
+		"status": "success",
+		"data":   data,
+	}
+	r, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+	w.Write(r)
+}

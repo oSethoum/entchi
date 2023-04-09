@@ -1,0 +1,181 @@
+package handlers
+
+import (
+	"{{ dir .Package }}/db"
+	"{{ .Package }}"
+	"encoding/json"
+	"errors"
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+)
+{{- $cs := .CurrentSchema }}
+{{- $pn := pascal $cs.Name }}
+{{- $ppn := plural $cs.Name | pascal }}
+{{- $cn := camel $cs }}
+{{- $pcn := plural $cs | camel}}
+
+{{- if skip_handler_find $cs | not }}
+func Find{{ $pn }}(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	{{ $cn }}, err := db.Client.{{ $pn }}.Get(r.Context(), id)
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, {{ $cn }})
+}
+{{- end }}
+
+{{- if skip_handler_find_many $cs | not }}
+func Find{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
+	query := new(ent.{{ $pn }}QueryInput)
+	q := r.URL.Query().Get("query")
+	if q != "" {
+		err := json.Unmarshal([]byte(q), query)
+		if err != nil {
+			StopWithError(w, err)
+			return
+		}
+	}
+	{{ $pcn }}, err := db.Client.{{ $pn }}.Query().SetInput(query).All(r.Context())
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, {{ $pcn }})
+}
+{{- end }}
+
+{{- if skip_handler_create $cs | not }}
+func Create{{ $pn }}(w http.ResponseWriter, r *http.Request) {
+	body := new(ent.{{ $pn }}CreateInput)
+	err := json.NewDecoder(r.Body).Decode(body)
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	{{ $cn }}, err := db.Client.{{ $pn }}.Create().SetInput(body).Save(r.Context())
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, {{ $cn }}, http.StatusCreated)
+}
+{{- end }}
+
+{{- if skip_handler_create_many $cs | not }}
+func Create{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
+	body := []*ent.{{ $pn }}CreateInput{}
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	if len(body) == 0 {
+		StopWithError(w, errors.New("empty array"))
+		return
+	}
+	builders := []*ent.{{ $pn }}Create{}
+	for _, b := range body {
+		builders = append(builders, db.Client.{{ $pn }}.Create().SetInput(b))
+	}
+	{{ $pcn }}, err := db.Client.{{ $pn }}.CreateBulk(builders...).Save(r.Context())
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, {{ $pcn }}, http.StatusCreated)
+}
+{{- end }}
+
+{{- if skip_handler_update $cs | not }}
+func Update{{ $pn }}(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	body := new(ent.{{ $pn }}UpdateInput)
+	err := json.NewDecoder(r.Body).Decode(body)
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	{{ $cn }}, err := db.Client.{{ $pn }}.UpdateOneID(id).SetInput(body).Save(r.Context())
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, {{ $cn }})
+}
+{{- end }}
+
+{{- if skip_handler_update_many $cs | not }}
+func Update{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
+	ww := chi.URLParam(r, "where")
+	where := new(ent.{{ $pn }}WhereInput)
+	action := db.Client.{{ $pn }}.Update()
+	if ww != "" {
+		err := json.Unmarshal([]byte(ww), where)
+		if err != nil {
+			StopWithError(w, err)
+			return
+		}
+		predicate, err := where.P()
+		if err != nil {
+			StopWithError(w, err)
+			return
+		}
+		action = action.Where(predicate)
+	}
+	body := new(ent.{{ $pn }}UpdateInput)
+	err := json.NewDecoder(r.Body).Decode(body)
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+
+	_, err = action.SetInput(body).Save(r.Context())
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, nil)
+}
+{{- end }}
+
+{{- if skip_handler_delete $cs | not }}
+func Delete{{ $pn }}(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	err := db.Client.{{ $pn }}.DeleteOneID(id).Exec(r.Context())
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, nil)
+}
+{{- end }}
+
+{{- if skip_handler_delete_many $cs | not }}
+func Delete{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
+	ww := chi.URLParam(r, "where")
+	where := new(ent.{{ $pn }}WhereInput)
+	action := db.Client.{{ $pn }}.Delete()
+	if ww != "" {
+		err := json.Unmarshal([]byte(ww), where)
+		if err != nil {
+			StopWithError(w, err)
+			return
+		}
+		predicate, err := where.P()
+		if err != nil {
+			StopWithError(w, err)
+			return
+		}
+		action = action.Where(predicate)
+	}
+	_, err := action.Exec(r.Context())
+	if err != nil {
+		StopWithError(w, err)
+		return
+	}
+	StopWithSuccess(w, nil)
+}
+{{- end }}
