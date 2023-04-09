@@ -19,12 +19,12 @@ func (e *extension) generate(next gen.Generator) gen.Generator {
 		s = parseTemplate("ent/errors", e.data)
 		writeFile("ent/errors.go", s)
 
-		if e.data.EntchiConfig != nil {
-			s = parseTemplate("Entchi/routes", e.data)
-			writeFile(path.Join(e.data.EntchiConfig.RoutesPath, "routes.go"), s)
+		if e.data.ChiConfig != nil {
+			s = parseTemplate("chi/routes", e.data)
+			writeFile(path.Join(e.data.ChiConfig.RoutesPath, "routes.go"), s)
 
-			s = parseTemplate("Entchi/util", e.data)
-			writeFile(path.Join(e.data.EntchiConfig.HandlersPath, "util.go"), s)
+			s = parseTemplate("chi/util", e.data)
+			writeFile(path.Join(e.data.ChiConfig.HandlersPath, "util.go"), s)
 
 			for _, schema := range g.Schemas {
 				if skip_schema_query(schema) && skip_schema_create(schema) &&
@@ -32,8 +32,8 @@ func (e *extension) generate(next gen.Generator) gen.Generator {
 					continue
 				}
 				e.data.CurrentSchema = schema
-				s := parseTemplate("Entchi/handler", e.data)
-				writeFile(path.Join(e.data.EntchiConfig.HandlersPath, snake(plural(schema.Name))+".go"), s)
+				s := parseTemplate("chi/handler", e.data)
+				writeFile(path.Join(e.data.ChiConfig.HandlersPath, snake(plural(schema.Name))+".go"), s)
 			}
 		}
 

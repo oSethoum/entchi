@@ -35,10 +35,10 @@ func WithDB(config *DBConfig) option {
 	}
 }
 
-func WithEntchi(config *EntchiConfig) option {
+func WithChi(config *ChiConfig) option {
 	return func(e *extension) {
 		if config == nil {
-			config = new(EntchiConfig)
+			config = new(ChiConfig)
 		}
 		if config.HandlersPath == "" {
 			config.HandlersPath = "handlers"
@@ -46,7 +46,7 @@ func WithEntchi(config *EntchiConfig) option {
 		if config.RoutesPath == "" {
 			config.RoutesPath = "routes"
 		}
-		e.data.EntchiConfig = config
+		e.data.ChiConfig = config
 	}
 }
 

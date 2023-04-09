@@ -26,7 +26,7 @@ type data struct {
 	*gen.Graph
 	DBConfig      *DBConfig
 	TSConfig      *TSConfig
-	EntchiConfig  *EntchiConfig
+	ChiConfig     *ChiConfig
 	CurrentSchema *load.Schema
 	IDType        string
 }
@@ -44,7 +44,7 @@ type TSConfig struct {
 	IDType    string
 }
 
-type EntchiConfig struct {
+type ChiConfig struct {
 	HandlersPath string
 	RoutesPath   string
 }
