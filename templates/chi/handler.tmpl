@@ -12,8 +12,8 @@ import (
 {{- $cs := .CurrentSchema }}
 {{- $pn := pascal $cs.Name }}
 {{- $ppn := plural $cs.Name | pascal }}
-{{- $cn := camel $cs }}
-{{- $pcn := plural $cs | camel}}
+{{- $cn := camel $cs.Name }}
+{{- $pcn := plural $cs.Name | camel}}
 
 {{- if skip_handler_find $cs | not }}
 func Find{{ $pn }}(w http.ResponseWriter, r *http.Request) {

@@ -8,7 +8,7 @@ import (
 
 func routes() chi.Router {
     r := chi.NewRouter()
-	{{- range .Schema }}
+	{{- range .Schemas }}
 	{{- if skip_handler_find . | not }} 
 	r.Get("/{{ plural .Name | camel }}/{id}", handlers.Find{{ pascal .Name }})
 	{{- end }}
