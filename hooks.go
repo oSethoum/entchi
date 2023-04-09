@@ -9,7 +9,6 @@ import (
 func (e *extension) generate(next gen.Generator) gen.Generator {
 	return gen.GenerateFunc(func(g *gen.Graph) error {
 		e.data.Graph = g
-
 		s := parseTemplate("ent/input", e.data)
 		writeFile("ent/input.go", s)
 

@@ -120,7 +120,7 @@ export interface {{ pascal .Name }}WhereInput {
 {{- end }}
 
 // api related types
-export type ID = {{ .IDType }};
+export type ID = {{ .TSConfig.IDType }};
 export type API = {
     {{ range .Schemas}}
         {{ plural .Name | camel }}: {

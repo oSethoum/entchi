@@ -28,7 +28,6 @@ type data struct {
 	TSConfig      *TSConfig
 	ChiConfig     *ChiConfig
 	CurrentSchema *load.Schema
-	IDType        string
 }
 
 type DBConfig struct {
