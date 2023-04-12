@@ -22,8 +22,10 @@ func (e *extension) generate(next gen.Generator) gen.Generator {
 			s = parseTemplate("chi/routes", e.data)
 			writeFile(path.Join(e.data.ChiConfig.RoutesPath, "routes.go"), s)
 
-			s = parseTemplate("chi/util", e.data)
-			writeFile(path.Join(e.data.ChiConfig.HandlersPath, "util.go"), s)
+			if !e.data.ChiConfig.SkipUtil {
+				s = parseTemplate("chi/util", e.data)
+				writeFile(path.Join(e.data.ChiConfig.HandlersPath, "util.go"), s)
+			}
 
 			for _, schema := range g.Schemas {
 				if skip_schema_query(schema) && skip_schema_create(schema) &&

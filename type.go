@@ -46,6 +46,7 @@ type TSConfig struct {
 type ChiConfig struct {
 	HandlersPath string
 	RoutesPath   string
+	SkipUtil     bool
 }
 
 type comparable interface {

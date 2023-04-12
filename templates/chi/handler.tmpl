@@ -23,7 +23,7 @@ func Find{{ $pn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, {{ $cn }})
+	StopWithSuccess(w, "{{ $pcn }}:find-one", {{ $cn }})
 }
 {{- end }}
 
@@ -43,7 +43,7 @@ func Find{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, {{ $pcn }})
+	StopWithSuccess(w, "{{ $pcn }}:find-many", {{ $pcn }})
 }
 {{- end }}
 
@@ -60,7 +60,7 @@ func Create{{ $pn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, {{ $cn }}, http.StatusCreated)
+	StopWithSuccess(w, "{{ $pcn }}:create-one", {{ $cn }}, http.StatusCreated)
 }
 {{- end }}
 
@@ -85,7 +85,7 @@ func Create{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, {{ $pcn }}, http.StatusCreated)
+	StopWithSuccess(w, "{{ $pcn }}:create-many", {{ $pcn }}, http.StatusCreated)
 }
 {{- end }}
 
@@ -103,7 +103,7 @@ func Update{{ $pn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, {{ $cn }})
+	StopWithSuccess(w, "{{ $pcn }}:update-one", {{ $cn }})
 }
 {{- end }}
 
@@ -137,7 +137,7 @@ func Update{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, nil)
+	StopWithSuccess(w, "{{ $pcn }}:update-many", nil)
 }
 {{- end }}
 
@@ -149,7 +149,7 @@ func Delete{{ $pn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, nil)
+	StopWithSuccess(w, "{{ $pcn }}:delete-one", nil)
 }
 {{- end }}
 
@@ -176,6 +176,6 @@ func Delete{{ $ppn }}(w http.ResponseWriter, r *http.Request) {
 		StopWithError(w, err)
 		return
 	}
-	StopWithSuccess(w, nil)
+	StopWithSuccess(w, "{{ $pcn }}:delete-many", nil)
 }
 {{- end }}

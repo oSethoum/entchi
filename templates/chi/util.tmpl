@@ -26,7 +26,7 @@ func StopWithError(w http.ResponseWriter, err error, code ...int) {
 	w.Write(r)
 }
 
-func StopWithSuccess(w http.ResponseWriter, data any, code ...int) {
+func StopWithSuccess(w http.ResponseWriter, event string, data any, code ...int) {
 	statusCode := http.StatusOK
 	if len(code) > 0 {
 		statusCode = code[0]
